@@ -1,8 +1,8 @@
-package aibles.springdatajdbc.userservice.controllers;
+package aibles.springdatajdbc.userservice.user.controllers;
 
-import aibles.springdatajdbc.userservice.dtos.request.UserRequestDTO;
-import aibles.springdatajdbc.userservice.dtos.response.UserResponseDTO;
-import aibles.springdatajdbc.userservice.services.ICreateUserService;
+import aibles.springdatajdbc.userservice.user.dtos.request.UserRequestDTO;
+import aibles.springdatajdbc.userservice.user.dtos.response.UserResponseDTO;
+import aibles.springdatajdbc.userservice.user.services.ICreateUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;

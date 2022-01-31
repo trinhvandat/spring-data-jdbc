@@ -1,13 +1,14 @@
-package aibles.springdatajdbc.userservice.services.imls;
+package aibles.springdatajdbc.userservice.user.services.imls;
 
 import aibles.springdatajdbc.userservice.converters.IModelConverter;
-import aibles.springdatajdbc.userservice.dtos.request.UserRequestDTO;
-import aibles.springdatajdbc.userservice.dtos.response.UserResponseDTO;
+import aibles.springdatajdbc.userservice.user.dtos.request.UserRequestDTO;
+import aibles.springdatajdbc.userservice.user.dtos.response.UserResponseDTO;
 import aibles.springdatajdbc.userservice.exceptions.InvalidCreateUserInputException;
-import aibles.springdatajdbc.userservice.models.UserInfo;
-import aibles.springdatajdbc.userservice.repositories.IUserInfoRepository;
-import aibles.springdatajdbc.userservice.services.ICreateUserService;
+import aibles.springdatajdbc.userservice.user.models.UserInfo;
+import aibles.springdatajdbc.userservice.user.repositories.IUserInfoRepository;
+import aibles.springdatajdbc.userservice.user.services.ICreateUserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -18,17 +19,21 @@ public class CreateUserServiceIml implements ICreateUserService {
 
     private final IUserInfoRepository iUserInfoRepository;
     private final IModelConverter<UserInfo, UserRequestDTO, UserResponseDTO> userConverter;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
     public CreateUserServiceIml(IUserInfoRepository iUserInfoRepository,
-                                IModelConverter<UserInfo, UserRequestDTO, UserResponseDTO> userConverter) {
+                                IModelConverter<UserInfo, UserRequestDTO, UserResponseDTO> userConverter,
+                                PasswordEncoder passwordEncoder) {
         this.iUserInfoRepository = iUserInfoRepository;
         this.userConverter = userConverter;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
     public UserResponseDTO execute(UserRequestDTO userRequestDTO) {
         validateUserRequest(userRequestDTO);
+        userRequestDTO.setPassword(passwordEncoder.encode(userRequestDTO.getPassword()));
         final UserInfo userInfo = iUserInfoRepository.save(userConverter.convertToEntity(userRequestDTO));
         return userConverter.convertToDTO(userInfo);
     }

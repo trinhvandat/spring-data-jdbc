@@ -1,23 +1,30 @@
-package aibles.springdatajdbc.userservice.dtos.response;
+package aibles.springdatajdbc.userservice.user.models;
 
-public class UserResponseDTO {
-    private int id;
+import org.springframework.data.annotation.Id;
+
+public class UserInfo {
+
+    @Id
+    private Integer id;
     private String username;
     private String email;
     private String password;
 
-    public UserResponseDTO(UserResponseDTOBuilder userResponseDTOBuilder) {
-        this.id = userResponseDTOBuilder.id;
-        this.username = userResponseDTOBuilder.username;
-        this.email = userResponseDTOBuilder.email;
-        this.password = userResponseDTOBuilder.password;
+    public UserInfo() {
     }
 
-    public int getId() {
+    public UserInfo(UserBuilder userBuilder) {
+        this.id = userBuilder.id;
+        this.username = userBuilder.username;
+        this.email = userBuilder.email;
+        this.password = userBuilder.password;
+    }
+
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -45,35 +52,35 @@ public class UserResponseDTO {
         this.password = password;
     }
 
-    public static class UserResponseDTOBuilder{
-        private int id;
+    public static class UserBuilder {
+        private Integer id;
         private String username;
         private String email;
         private String password;
 
-        public UserResponseDTOBuilder id(int id){
+        public UserBuilder id(int id){
             this.id = id;
             return this;
         }
 
-        public UserResponseDTOBuilder username(String username){
+        public UserBuilder username(String username){
             this.username = username;
             return this;
         }
 
-        public UserResponseDTOBuilder email(String email){
+        public UserBuilder email(String email){
             this.email = email;
             return this;
         }
 
-        public UserResponseDTOBuilder password(String password){
+        public UserBuilder password(String password){
             this.password = password;
             return this;
         }
 
-        public UserResponseDTO build(){
-            UserResponseDTO userResponseDTO = new UserResponseDTO(this);
-            return userResponseDTO;
+        public UserInfo build() {
+            UserInfo userInfo = new UserInfo(this);
+            return userInfo;
         }
     }
 }

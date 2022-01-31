@@ -1,4 +1,4 @@
-package aibles.springdatajdbc.userservice.dtos.request;
+package aibles.springdatajdbc.userservice.user.dtos.request;
 
 public class UserRequestDTO {
     private String username;

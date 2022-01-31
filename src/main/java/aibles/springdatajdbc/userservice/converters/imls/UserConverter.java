@@ -1,9 +1,9 @@
 package aibles.springdatajdbc.userservice.converters.imls;
 
 import aibles.springdatajdbc.userservice.converters.IModelConverter;
-import aibles.springdatajdbc.userservice.dtos.request.UserRequestDTO;
-import aibles.springdatajdbc.userservice.dtos.response.UserResponseDTO;
-import aibles.springdatajdbc.userservice.models.UserInfo;
+import aibles.springdatajdbc.userservice.user.dtos.request.UserRequestDTO;
+import aibles.springdatajdbc.userservice.user.dtos.response.UserResponseDTO;
+import aibles.springdatajdbc.userservice.user.models.UserInfo;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
