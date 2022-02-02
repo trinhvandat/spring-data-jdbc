@@ -15,7 +15,7 @@ public interface IUserInfoRepository extends PagingAndSortingRepository<UserInfo
     @Query("SELECT CASE WHEN COUNT(u.id)> 0 THEN true ELSE false END FROM user_info u WHERE u.email = :email")
     boolean isExistEmail(@Param("email") String email);
 
-    @Query("SELECT u.id, u.username, u.password, u.email FROM user_info u WHERE u.username = :username")
+    @Query("SELECT u.id, u.username, u.password, u.email, u.is_active FROM user_info u WHERE u.username = :username")
     Optional<UserInfo> retrieveUserByUsername(@Param("username") String username);
 
     @Query("SELECT u.id, u.username, u.password, u.email FROM user_info u WHERE u.email = :email")

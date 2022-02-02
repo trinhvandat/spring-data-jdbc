@@ -1,4 +1,4 @@
-package aibles.springdatajdbc.userservice.authentication.dto.response;
+package aibles.springdatajdbc.userservice.user.dtos.response;
 
 public class LoginResponseDTO {
     private String accessToken;
