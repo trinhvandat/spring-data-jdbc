@@ -4,7 +4,10 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
 
-    <include file="/changelog/create-user-info-table.xml" relativeToChangelogFile="true"/>
-    <include file="/changelog/222022_1604_add_field_isActive_to_userInfo_table.xml" relativeToChangelogFile="true"/>
+    <changeSet id="222022_1604_001" author="Leonard">
+        <addColumn tableName="user_info">
+            <column name="is_active" type="boolean"></column>
+        </addColumn>
+    </changeSet>
 
 </databaseChangeLog>

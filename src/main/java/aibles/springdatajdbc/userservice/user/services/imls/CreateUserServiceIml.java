@@ -1,6 +1,8 @@
 package aibles.springdatajdbc.userservice.user.services.imls;
 
 import aibles.springdatajdbc.userservice.converters.IModelConverter;
+import aibles.springdatajdbc.userservice.mail.dto.req.MailRequestDTO;
+import aibles.springdatajdbc.userservice.mail.service.IMailService;
 import aibles.springdatajdbc.userservice.user.dtos.request.UserRequestDTO;
 import aibles.springdatajdbc.userservice.user.dtos.response.UserResponseDTO;
 import aibles.springdatajdbc.userservice.exceptions.InvalidCreateUserInputException;
@@ -13,28 +15,42 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
+import java.util.logging.Logger;
 
 @Service
 public class CreateUserServiceIml implements ICreateUserService {
 
+    private static final Logger LOG = Logger.getLogger(CreateUserServiceIml.class.getName());
+
     private final IUserInfoRepository iUserInfoRepository;
     private final IModelConverter<UserInfo, UserRequestDTO, UserResponseDTO> userConverter;
     private final PasswordEncoder passwordEncoder;
+    private final IMailService iMailService;
 
     @Autowired
     public CreateUserServiceIml(IUserInfoRepository iUserInfoRepository,
                                 IModelConverter<UserInfo, UserRequestDTO, UserResponseDTO> userConverter,
-                                PasswordEncoder passwordEncoder) {
+                                PasswordEncoder passwordEncoder,
+                                IMailService iMailService) {
         this.iUserInfoRepository = iUserInfoRepository;
         this.userConverter = userConverter;
         this.passwordEncoder = passwordEncoder;
+        this.iMailService = iMailService;
     }
 
     @Override
     public UserResponseDTO execute(UserRequestDTO userRequestDTO) {
         validateUserRequest(userRequestDTO);
-        userRequestDTO.setPassword(passwordEncoder.encode(userRequestDTO.getPassword()));
-        final UserInfo userInfo = iUserInfoRepository.save(userConverter.convertToEntity(userRequestDTO));
+
+        UserInfo userInfo = userConverter.convertToEntity(userRequestDTO);
+        userInfo.setPassword(passwordEncoder.encode(userInfo.getPassword()));
+        userInfo.setActive(false);
+
+        userInfo = iUserInfoRepository.save(userInfo);
+
+        sendOTPConfirmRegister(userInfo.getEmail());
+
         return userConverter.convertToDTO(userInfo);
     }
 
@@ -60,5 +76,30 @@ public class CreateUserServiceIml implements ICreateUserService {
 
     private boolean isExistEmail(final String email){
         return iUserInfoRepository.isExistEmail(email);
+    }
+
+    private void sendOTPConfirmRegister(final String email){
+        MailRequestDTO mailRequestDTO = new MailRequestDTO();
+        mailRequestDTO.setReceiver(email);
+        mailRequestDTO.setSubject("Confirm register account");
+        mailRequestDTO.setMessage("Your confirm register account OTP code is " + generateRegisterOTP() +
+                ". This OTP code will be expired about 3 minutes.");
+
+        iMailService.sendMail(mailRequestDTO);
+    }
+
+    private String generateRegisterOTP() {
+        StringBuilder otp = new StringBuilder();
+        Random random = new Random();
+
+        int i;
+        final int otpLength = 6;
+
+        for (i = 0; i < otpLength; i++) {
+            int randomNumber = random.nextInt(9);
+            otp.append(randomNumber);
+        }
+
+        return otp.toString();
     }
 }

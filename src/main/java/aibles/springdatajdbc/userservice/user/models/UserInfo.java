@@ -9,6 +9,7 @@ public class UserInfo {
     private String username;
     private String email;
     private String password;
+    private boolean isActive;
 
     public UserInfo() {
     }
@@ -50,6 +51,25 @@ public class UserInfo {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    @Override
+    public String toString() {
+        return "UserInfo{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", isActive=" + isActive +
+                '}';
+    }
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
     }
 
     public static class UserBuilder {
