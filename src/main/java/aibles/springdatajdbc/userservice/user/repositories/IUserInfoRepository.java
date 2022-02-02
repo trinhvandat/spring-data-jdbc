@@ -17,4 +17,7 @@ public interface IUserInfoRepository extends PagingAndSortingRepository<UserInfo
 
     @Query("SELECT u.id, u.username, u.password, u.email FROM user_info u WHERE u.username = :username")
     Optional<UserInfo> retrieveUserByUsername(@Param("username") String username);
+
+    @Query("SELECT u.id, u.username, u.password, u.email FROM user_info u WHERE u.email = :email")
+    Optional<UserInfo> retrieveUserByEmail(@Param("email") String email);
 }

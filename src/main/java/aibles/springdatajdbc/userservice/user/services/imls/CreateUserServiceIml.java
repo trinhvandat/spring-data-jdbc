@@ -9,6 +9,7 @@ import aibles.springdatajdbc.userservice.exceptions.InvalidCreateUserInputExcept
 import aibles.springdatajdbc.userservice.user.models.UserInfo;
 import aibles.springdatajdbc.userservice.user.repositories.IUserInfoRepository;
 import aibles.springdatajdbc.userservice.user.services.ICreateUserService;
+import com.google.common.cache.LoadingCache;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -27,16 +28,18 @@ public class CreateUserServiceIml implements ICreateUserService {
     private final IModelConverter<UserInfo, UserRequestDTO, UserResponseDTO> userConverter;
     private final PasswordEncoder passwordEncoder;
     private final IMailService iMailService;
+    private final LoadingCache<String, String> otpCache;
 
     @Autowired
     public CreateUserServiceIml(IUserInfoRepository iUserInfoRepository,
                                 IModelConverter<UserInfo, UserRequestDTO, UserResponseDTO> userConverter,
                                 PasswordEncoder passwordEncoder,
-                                IMailService iMailService) {
+                                IMailService iMailService, LoadingCache<String, String> otpCache) {
         this.iUserInfoRepository = iUserInfoRepository;
         this.userConverter = userConverter;
         this.passwordEncoder = passwordEncoder;
         this.iMailService = iMailService;
+        this.otpCache = otpCache;
     }
 
     @Override
@@ -79,13 +82,20 @@ public class CreateUserServiceIml implements ICreateUserService {
     }
 
     private void sendOTPConfirmRegister(final String email){
+        final String otp = generateRegisterOTP();
+        final String message = new StringBuilder()
+                .append("Your confirm register account OTP code is ")
+                .append(otp)
+                .append(". This OTP code will be expired about 3 minutes.").toString();
+
         MailRequestDTO mailRequestDTO = new MailRequestDTO();
         mailRequestDTO.setReceiver(email);
         mailRequestDTO.setSubject("Confirm register account");
-        mailRequestDTO.setMessage("Your confirm register account OTP code is " + generateRegisterOTP() +
-                ". This OTP code will be expired about 3 minutes.");
+        mailRequestDTO.setMessage(message);
 
         iMailService.sendMail(mailRequestDTO);
+
+        otpCache.put(email, otp);
     }
 
     private String generateRegisterOTP() {
