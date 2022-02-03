@@ -3,6 +3,9 @@ package aibles.springdatajdbc.userservice.authentication.filter;
 import aibles.springdatajdbc.userservice.authentication.components.IJwtService;
 import aibles.springdatajdbc.userservice.authentication.payload.CustomUserPrincipalService;
 import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.SignatureException;
+import io.jsonwebtoken.UnsupportedJwtException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -78,6 +81,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 logger.warning("Unable to get JWT token");
             } catch (ExpiredJwtException ex){
                 logger.warning("JWT token has expired");
+            } catch (MalformedJwtException ex){
+                logger.warning("Invalid JWT token.");
+            } catch (SignatureException ex){
+                logger.warning("Invalid JWT signature algorithm.");
+            } catch (UnsupportedJwtException ex){
+                logger.warning("UnSupported JWT exception.");
             }
         }
         return username;
