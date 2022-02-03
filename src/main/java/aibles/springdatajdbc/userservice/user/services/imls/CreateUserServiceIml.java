@@ -1,11 +1,11 @@
 package aibles.springdatajdbc.userservice.user.services.imls;
 
 import aibles.springdatajdbc.userservice.converters.IModelConverter;
+import aibles.springdatajdbc.userservice.exceptions.BadRequestException;
 import aibles.springdatajdbc.userservice.mail.dto.req.MailRequestDTO;
 import aibles.springdatajdbc.userservice.mail.service.IMailService;
 import aibles.springdatajdbc.userservice.user.dtos.request.UserRequestDTO;
 import aibles.springdatajdbc.userservice.user.dtos.response.UserResponseDTO;
-import aibles.springdatajdbc.userservice.exceptions.InvalidCreateUserInputException;
 import aibles.springdatajdbc.userservice.user.models.UserInfo;
 import aibles.springdatajdbc.userservice.user.repositories.IUserInfoRepository;
 import aibles.springdatajdbc.userservice.user.services.ICreateUserService;
@@ -69,7 +69,7 @@ public class CreateUserServiceIml implements ICreateUserService {
         }
 
         if (!errorMap.isEmpty()){
-            throw new InvalidCreateUserInputException(errorMap);
+            throw new BadRequestException(errorMap);
         }
     }
 
