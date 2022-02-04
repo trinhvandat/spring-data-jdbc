@@ -60,6 +60,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/v1/users").permitAll()
                 .antMatchers("/api/v1/users/login").permitAll()
                 .antMatchers(HttpMethod.POST, "/api/v1/users/active").permitAll()
+                .antMatchers(HttpMethod.POST, "/api/v1/users/pre-active").permitAll()
                 .anyRequest().authenticated()
                 .and().exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint)
                 .accessDeniedHandler(customAccessDeniedHandler)
