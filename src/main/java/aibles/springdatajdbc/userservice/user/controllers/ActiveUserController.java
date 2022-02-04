@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("/api/v1/users/active")
 @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -19,7 +21,7 @@ public class ActiveUserController {
     }
 
     @PostMapping
-    public void execute(@RequestBody ActiveUserRequestDTO activeUserRequest){
+    public void execute(@RequestBody @Valid ActiveUserRequestDTO activeUserRequest){
         iActiveUserService.execute(activeUserRequest);
     }
 }

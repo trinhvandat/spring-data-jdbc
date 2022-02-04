@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("/api/v1/users")
 public class CreateUserController {
@@ -20,7 +22,7 @@ public class CreateUserController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public UserResponseDTO execute(@RequestBody UserRequestDTO userRequestDTO){
+    public UserResponseDTO execute(@RequestBody @Valid UserRequestDTO userRequestDTO){
         return iCreateUserService.execute(userRequestDTO);
     }
 
