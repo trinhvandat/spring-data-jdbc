@@ -17,7 +17,6 @@ public class UserConverter implements IModelConverter<UserInfo, UserRequestDTO, 
                 .id(userInfo.getId())
                 .username(userInfo.getUsername())
                 .email(userInfo.getEmail())
-                .password(userInfo.getPassword())
                 .build();
     }
 

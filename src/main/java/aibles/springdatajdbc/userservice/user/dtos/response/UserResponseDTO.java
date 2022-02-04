@@ -4,13 +4,11 @@ public class UserResponseDTO {
     private int id;
     private String username;
     private String email;
-    private String password;
 
     public UserResponseDTO(UserResponseDTOBuilder userResponseDTOBuilder) {
         this.id = userResponseDTOBuilder.id;
         this.username = userResponseDTOBuilder.username;
         this.email = userResponseDTOBuilder.email;
-        this.password = userResponseDTOBuilder.password;
     }
 
     public int getId() {
@@ -37,19 +35,10 @@ public class UserResponseDTO {
         this.email = email;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
     public static class UserResponseDTOBuilder{
         private int id;
         private String username;
         private String email;
-        private String password;
 
         public UserResponseDTOBuilder id(int id){
             this.id = id;
@@ -63,11 +52,6 @@ public class UserResponseDTO {
 
         public UserResponseDTOBuilder email(String email){
             this.email = email;
-            return this;
-        }
-
-        public UserResponseDTOBuilder password(String password){
-            this.password = password;
             return this;
         }
 
