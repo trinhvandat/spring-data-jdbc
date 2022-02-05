@@ -6,5 +6,5 @@
 
     <include file="/changelog/create-user-info-table.xml" relativeToChangelogFile="true"/>
     <include file="/changelog/222022_1604_add_field_isActive_to_userInfo_table.xml" relativeToChangelogFile="true"/>
-
+    <include file="/changelog/422022_2206_role_table.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>

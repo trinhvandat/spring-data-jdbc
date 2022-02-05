@@ -1,0 +1,42 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+    <changeSet id="422022_2206_001" author="Leonard">
+        <createTable tableName="role">
+            <column name="id" type="integer">
+                <constraints primaryKeyName="pk_role_id" primaryKey="true"/>
+            </column>
+            <column name="name" type="varchar(20)">
+                <constraints unique="true" nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    
+    <changeSet id="422022_2206_002" author="Leonard">
+        <loadData tableName="role" file="/migration/data/422022_2206_role_data.csv">
+            <column name="id" type="numeric"/>
+            <column name="nam" type="string"/>
+        </loadData>
+    </changeSet>
+
+    <changeSet id="422022_2206_003" author="Leonard">
+        <createTable tableName="user_role">
+            <column name="user_id" type="integer">
+                <constraints primaryKey="true" primaryKeyName="pk_user-role_user-id"/>
+            </column>
+            <column name="role_id" type="integer">
+                <constraints primaryKey="true" primaryKeyName="pk_user-role_role-id"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="user_role" baseColumnNames="user_id"
+                                 constraintName="fk_user-role_relation_user_by_user-id"
+                                 referencedTableName="user_info" referencedColumnNames="id"/>
+        <addForeignKeyConstraint baseTableName="user_role" baseColumnNames="role_id"
+                                 constraintName="fk_user-role_relation_role_by_role-id"
+                                 referencedTableName="role" referencedColumnNames="id"/>
+    </changeSet>
+</databaseChangeLog>
