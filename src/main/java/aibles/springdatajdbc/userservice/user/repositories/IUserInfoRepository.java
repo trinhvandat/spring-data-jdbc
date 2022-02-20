@@ -1,6 +1,7 @@
 package aibles.springdatajdbc.userservice.user.repositories;
 
 import aibles.springdatajdbc.userservice.user.models.UserInfo;
+import liquibase.pro.packaged.P;
 import org.springframework.data.jdbc.repository.query.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
@@ -20,4 +21,7 @@ public interface IUserInfoRepository extends PagingAndSortingRepository<UserInfo
 
     @Query("SELECT u.id, u.username, u.password, u.email FROM user_info u WHERE u.email = :email")
     Optional<UserInfo> retrieveUserByEmail(@Param("email") String email);
+
+    @Query("SELECT u.username FROM user_info u WHERE u.email = :email")
+    UserInfo retrieveUsernameByEmail(@Param("email") String email);
 }
