@@ -48,7 +48,7 @@ public class GetOTPResetPasswordServiceIml implements IGetOTPResetPasswordServic
 
 
     private void sendOTPResetPassword(String email) {
-        final String otp = generateRegisterOTP();
+        final String otp = generateRecoverOTP();
         final String message = new StringBuilder()
                 .append("Your confirm reset password OTP code is ")
                 .append(otp)
@@ -62,7 +62,7 @@ public class GetOTPResetPasswordServiceIml implements IGetOTPResetPasswordServic
         otpCache.put(email, otp);
     }
 
-    private String generateRegisterOTP() {
+    private String generateRecoverOTP() {
         StringBuilder otp = new StringBuilder();
         Random random = new Random();
 
