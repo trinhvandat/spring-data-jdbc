@@ -1,6 +1,7 @@
 package aibles.springdatajdbc.userservice.user.dtos.response;
 
 public class ResetPasswordResponseDTO {
+
     private String accessToken;
 
     public ResetPasswordResponseDTO(String accessToken) {

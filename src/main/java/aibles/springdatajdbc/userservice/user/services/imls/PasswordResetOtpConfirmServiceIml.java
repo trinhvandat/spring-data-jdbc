@@ -5,12 +5,10 @@ import aibles.springdatajdbc.userservice.exceptions.BadRequestException;
 import aibles.springdatajdbc.userservice.exceptions.ServerIntervalException;
 import aibles.springdatajdbc.userservice.user.dtos.request.ConfirmOTPResetPasswordDTO;
 import aibles.springdatajdbc.userservice.user.dtos.response.ResetPasswordResponseDTO;
-import aibles.springdatajdbc.userservice.user.models.UserInfo;
 import aibles.springdatajdbc.userservice.user.repositories.IUserInfoRepository;
-import aibles.springdatajdbc.userservice.user.services.IConfirmOTPResetPasswordService;
+import aibles.springdatajdbc.userservice.user.services.IPasswordResetOtpConfirmService;
 import com.google.common.cache.LoadingCache;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
@@ -18,47 +16,49 @@ import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Logger;
 
 @Service
-public class ConfirmOTPResetPasswordServiceIml implements IConfirmOTPResetPasswordService {
+public class PasswordResetOtpConfirmServiceIml implements IPasswordResetOtpConfirmService {
+
     private static final Logger LOG = Logger.getLogger(ConfirmOTPResetPasswordDTO.class.getName());
 
-    private final LoadingCache<String, String> loadingCache;
-    private final IJwtService iJwtService;
+    private final LoadingCache<String, String> cache;
+    private final IJwtService jwtService;
     private final UserDetailsService userDetailsService;
-    private final IUserInfoRepository iUserInfoRepository;
+    private final IUserInfoRepository userInfoRepository;
 
     @Autowired
-    public ConfirmOTPResetPasswordServiceIml(final LoadingCache<String, String> loadingCache,
-                                             final IJwtService iJwtService,
+    public PasswordResetOtpConfirmServiceIml(final LoadingCache<String, String> cache,
+                                             final IJwtService jwtService,
                                              final UserDetailsService userDetailsService,
-                                             final IUserInfoRepository iUserInfoRepository) {
-        this.loadingCache = loadingCache;
-        this.iJwtService = iJwtService;
+                                             final IUserInfoRepository userInfoRepository) {
+        this.cache = cache;
+        this.jwtService = jwtService;
         this.userDetailsService = userDetailsService;
-        this.iUserInfoRepository = iUserInfoRepository;
+        this.userInfoRepository = userInfoRepository;
     }
 
 
     @Override
     public ResetPasswordResponseDTO execute(ConfirmOTPResetPasswordDTO confirmOTPResetPasswordDTO) {
-    validateOTP(confirmOTPResetPasswordDTO);
-        return getAccessTokenResetPassword(confirmOTPResetPasswordDTO);
+        validateOTP(confirmOTPResetPasswordDTO);
+        String token=generateTokenResetPassword();
+        cache.put("token"+confirmOTPResetPasswordDTO.getEmail(),token);
+        return new ResetPasswordResponseDTO(token);
     }
 
-    private ResetPasswordResponseDTO getAccessTokenResetPassword(ConfirmOTPResetPasswordDTO confirmOTPResetPasswordDTO) {
-        UserInfo userInfo = iUserInfoRepository.retrieveUsernameByEmail(confirmOTPResetPasswordDTO.getEmail());
-        final UserDetails userDetails = userDetailsService.loadUserByUsername(userInfo.getUsername());
-        final String accessToken = iJwtService.generateJwtToken(userDetails);
-        return new ResetPasswordResponseDTO(accessToken);
+    private String generateTokenResetPassword() {
+        String token = UUID.randomUUID().toString();
+        return token;
     }
 
     private void validateOTP(ConfirmOTPResetPasswordDTO confirmOTPResetPasswordDTO) {
         Map<String, String> errorMap = new HashMap<>();
         try {
-            Optional.ofNullable(loadingCache.get(confirmOTPResetPasswordDTO.getEmail()))
+            Optional.ofNullable(cache.get(confirmOTPResetPasswordDTO.getEmail()))
                     .ifPresentOrElse(
                             otp -> {
                                 if (!confirmOTPResetPasswordDTO.getOtp().equals(otp)) {
@@ -74,5 +74,7 @@ public class ConfirmOTPResetPasswordServiceIml implements IConfirmOTPResetPasswo
         if (!errorMap.isEmpty()) {
             throw new BadRequestException(errorMap);
         }
+
     }
+
 }

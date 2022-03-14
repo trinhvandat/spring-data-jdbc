@@ -2,10 +2,13 @@ package aibles.springdatajdbc.userservice.user.dtos.request;
 
 import aibles.springdatajdbc.userservice.validation.otp.OTPConstraint;
 
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
 public class ConfirmOTPResetPasswordDTO {
+
     @NotBlank(message = "Email is required")
+    @Email(message = "Invalid email format")
     private String email;
 
     @NotBlank(message = "OTP is required")
@@ -27,4 +30,5 @@ public class ConfirmOTPResetPasswordDTO {
     public void setOtp(String otp) {
         this.otp = otp;
     }
+
 }

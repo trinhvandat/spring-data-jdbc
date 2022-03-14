@@ -6,13 +6,13 @@ import aibles.springdatajdbc.userservice.mail.service.IMailService;
 import aibles.springdatajdbc.userservice.user.dtos.request.GetOTPActiveUserReqDTO;
 import aibles.springdatajdbc.userservice.user.repositories.IUserInfoRepository;
 import aibles.springdatajdbc.userservice.user.services.IGetOTPActiveUserService;
+import aibles.springdatajdbc.userservice.util.otp.OTPGenerator;
 import com.google.common.cache.LoadingCache;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
 
 @Service
 public class GetOTPActiveUserServiceIml implements IGetOTPActiveUserService {
@@ -20,18 +20,22 @@ public class GetOTPActiveUserServiceIml implements IGetOTPActiveUserService {
     private final IUserInfoRepository iUserInfoRepository;
     private final IMailService iMailService;
     private final LoadingCache<String, String> otpCache;
+    private final OTPGenerator otpGenerator;
 
     @Autowired
-    public GetOTPActiveUserServiceIml(IUserInfoRepository iUserInfoRepository, IMailService iMailService, LoadingCache<String, String> otpCache) {
+    public GetOTPActiveUserServiceIml(IUserInfoRepository iUserInfoRepository, IMailService iMailService, LoadingCache<String, String> otpCache, OTPGenerator otpGenerator) {
         this.iUserInfoRepository = iUserInfoRepository;
         this.iMailService = iMailService;
         this.otpCache = otpCache;
+        this.otpGenerator = otpGenerator;
     }
 
     @Override
     public void execute(GetOTPActiveUserReqDTO getOTPActiveUserReqDTO) {
         validateGetOTPActiveRequestForm(getOTPActiveUserReqDTO);
-        sendOTPActiveUser(getOTPActiveUserReqDTO.getEmail());
+        final String otp = otpGenerator.execute();
+        sendOTPActiveUser(getOTPActiveUserReqDTO.getEmail(),otp);
+        otpCache.put(getOTPActiveUserReqDTO.getEmail(),otp);
     }
 
     private void validateGetOTPActiveRequestForm(GetOTPActiveUserReqDTO getOTPActiveUserReqDTO){
@@ -54,8 +58,7 @@ public class GetOTPActiveUserServiceIml implements IGetOTPActiveUserService {
         }
     }
 
-    private void sendOTPActiveUser(String email){
-        final String otp = generateRegisterOTP();
+    private void sendOTPActiveUser(String email,String otp){
         final String message = new StringBuilder()
                 .append("Your confirm register account OTP code is ")
                 .append(otp)
@@ -71,18 +74,5 @@ public class GetOTPActiveUserServiceIml implements IGetOTPActiveUserService {
         otpCache.put(email, otp);
     }
 
-    private String generateRegisterOTP() {
-        StringBuilder otp = new StringBuilder();
-        Random random = new Random();
 
-        int i;
-        final int otpLength = 6;
-
-        for (i = 0; i < otpLength; i++) {
-            int randomNumber = random.nextInt(9);
-            otp.append(randomNumber);
-        }
-
-        return otp.toString();
-    }
 }

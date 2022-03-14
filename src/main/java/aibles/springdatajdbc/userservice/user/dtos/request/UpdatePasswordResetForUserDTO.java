@@ -6,6 +6,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
 public class UpdatePasswordResetForUserDTO {
+
     @NotBlank(message = "Email is required")
     @Email(message = "Invalid email format")
     private String email;

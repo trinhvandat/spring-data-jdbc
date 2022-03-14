@@ -18,19 +18,19 @@ import java.util.Map;
 @Service
 public class UserLoginServiceIml implements IUserLoginService {
 
-    private final IJwtService iJwtService;
+    private final IJwtService jwtService;
     private final UserDetailsService userDetailsService;
-    private final IUserInfoRepository iUserInfoRepository;
+    private final IUserInfoRepository userInfoRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserLoginServiceIml(final IJwtService iJwtService,
+    public UserLoginServiceIml(final IJwtService jwtService,
                                final UserDetailsService userDetailsService,
-                               final IUserInfoRepository iUserInfoRepository,
+                               final IUserInfoRepository userInfoRepository,
                                final PasswordEncoder passwordEncoder) {
-        this.iJwtService = iJwtService;
+        this.jwtService = jwtService;
         this.userDetailsService = userDetailsService;
-        this.iUserInfoRepository = iUserInfoRepository;
+        this.userInfoRepository = userInfoRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -38,14 +38,14 @@ public class UserLoginServiceIml implements IUserLoginService {
     public LoginResponseDTO execute(LoginRequestDTO loginRequestDTO) {
         validateLoginRequest(loginRequestDTO);
         final UserDetails userDetails = userDetailsService.loadUserByUsername(loginRequestDTO.getUsername());
-        final String accessToken = iJwtService.generateJwtToken(userDetails);
+        final String accessToken = jwtService.generateJwtToken(userDetails);
         return new LoginResponseDTO(accessToken);
     }
 
     private void validateLoginRequest(LoginRequestDTO loginRequestDTO){
         Map<String, String> errorMap = new HashMap<>();
 
-        iUserInfoRepository.retrieveUserByUsername(loginRequestDTO.getUsername())
+       userInfoRepository.retrieveUserByUsername(loginRequestDTO.getUsername())
                 .ifPresentOrElse(
                         userInfo -> {
                             if (!userInfo.isActive()){
