@@ -9,6 +9,7 @@ import aibles.springdatajdbc.userservice.user.services.IGetOTPActiveUserService;
 import aibles.springdatajdbc.userservice.util.otp.OTPGenerator;
 import com.google.common.cache.LoadingCache;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -19,6 +20,7 @@ public class GetOTPActiveUserServiceIml implements IGetOTPActiveUserService {
 
     private final IUserInfoRepository iUserInfoRepository;
     private final IMailService iMailService;
+    @Qualifier("otp")
     private final LoadingCache<String, String> otpCache;
     private final OTPGenerator otpGenerator;
 

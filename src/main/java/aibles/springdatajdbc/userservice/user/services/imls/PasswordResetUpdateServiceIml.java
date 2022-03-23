@@ -9,6 +9,7 @@ import aibles.springdatajdbc.userservice.user.repositories.IUserInfoRepository;
 import aibles.springdatajdbc.userservice.user.services.IPasswordResetUpdateService;
 import com.google.common.cache.LoadingCache;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -27,14 +28,13 @@ public class PasswordResetUpdateServiceIml implements IPasswordResetUpdateServic
     private final IUserInfoRepository userInfoRepository;
     private final PasswordEncoder passwordEncoder;
     private final UserDetailsService userDetailsService;
+    @Qualifier("token")
     private final LoadingCache<String, String> tokenCache;
 
     @Autowired
     public PasswordResetUpdateServiceIml(IUserInfoRepository userInfoRepository,
                                          PasswordEncoder passwordEncoder,
-                                         IJwtService jwtService,
                                          UserDetailsService userDetailsService,
-                                         IGetUsernamePrincipalService getUsernamePrincipalService,
                                          LoadingCache<String,String> tokenCache) {
         this.userInfoRepository = userInfoRepository;
         this.passwordEncoder = passwordEncoder;

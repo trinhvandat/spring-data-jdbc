@@ -8,6 +8,7 @@ import aibles.springdatajdbc.userservice.user.repositories.IUserInfoRepository;
 import aibles.springdatajdbc.userservice.user.services.IActiveUserService;
 import com.google.common.cache.LoadingCache;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -22,6 +23,7 @@ public class ActiveUserServiceIml implements IActiveUserService {
     private static final Logger LOG = Logger.getLogger(ActiveUserServiceIml.class.getName());
 
     private final IUserInfoRepository iUserInfoRepository;
+    @Qualifier("otp")
     private final LoadingCache<String, String> otpCache;
 
     @Autowired

@@ -12,8 +12,9 @@ import java.util.concurrent.TimeUnit;
 public class OTPCacheConfiguration {
 
     private static final int OTP_EXPIRE_MINUTES = 3;
+    private static final int TOKEN_EXPIRE_MINUTES = 2;
 
-    @Bean
+    @Bean(name = "otp")
     public LoadingCache<String, String> createOtpCacheBean() {
         return CacheBuilder.newBuilder()
                 .expireAfterWrite(OTP_EXPIRE_MINUTES, TimeUnit.MINUTES)
@@ -24,4 +25,17 @@ public class OTPCacheConfiguration {
                     }
                 });
     }
+
+    @Bean(name = "token")
+    public LoadingCache<String, String> createTokenCacheBean() {
+        return CacheBuilder.newBuilder()
+                .expireAfterWrite(TOKEN_EXPIRE_MINUTES, TimeUnit.MINUTES)
+                .build(new CacheLoader<String, String>() {
+                    @Override
+                    public String load(String key) throws Exception {
+                        return key.toUpperCase();
+                    }
+                });
+    }
+
 }

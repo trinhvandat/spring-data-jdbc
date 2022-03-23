@@ -9,6 +9,7 @@ import aibles.springdatajdbc.userservice.user.services.IPasswordResetOtpGetServi
 import aibles.springdatajdbc.userservice.util.otp.OTPGenerator;
 import com.google.common.cache.LoadingCache;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 
@@ -17,6 +18,7 @@ public class PasswordResetOtpGetServiceIml implements IPasswordResetOtpGetServic
 
     private final IUserInfoRepository userInfoRepository;
     private final IMailService mailService;
+    @Qualifier("otp")
     private final LoadingCache<String, String> otpCache;
     private final OTPGenerator otpGenerator;
 
@@ -37,6 +39,7 @@ public class PasswordResetOtpGetServiceIml implements IPasswordResetOtpGetServic
         if (isExistEmail(resetPassOTPGetDTO.getEmail())) {
             final String otp = otpGenerator.execute();
             sendOTPResetPassword(resetPassOTPGetDTO.getEmail(),otp);
+            otpCache.put(resetPassOTPGetDTO.getEmail(),otp);
         } else {
             throw new UserNotFoundException();
         }
@@ -60,7 +63,5 @@ public class PasswordResetOtpGetServiceIml implements IPasswordResetOtpGetServic
         mailService.sendMail(mailRequestDTO);
 
     }
-
-
 
 }

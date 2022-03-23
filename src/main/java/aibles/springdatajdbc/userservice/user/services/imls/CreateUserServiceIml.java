@@ -11,6 +11,7 @@ import aibles.springdatajdbc.userservice.user.repositories.IUserInfoRepository;
 import aibles.springdatajdbc.userservice.user.services.ICreateUserService;
 import com.google.common.cache.LoadingCache;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -28,6 +29,7 @@ public class CreateUserServiceIml implements ICreateUserService {
     private final IModelConverter<UserInfo, UserRequestDTO, UserResponseDTO> userConverter;
     private final PasswordEncoder passwordEncoder;
     private final IMailService iMailService;
+    @Qualifier("otp")
     private final LoadingCache<String, String> otpCache;
 
     @Autowired
